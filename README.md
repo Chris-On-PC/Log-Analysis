@@ -71,3 +71,7 @@ as perecentage from good, error
 where error.date_error = good.date_ok and
 cast(error.num as numeric)/cast(good.num as numeric)*100 >1
 ```
+
+## Running the Queries
+
+To execute the python program and gather the information from the database, make sure your virtual machine is running. From the command line running vagrant, execute the python program named "main.py". The will run the various queries against the database and return the onformation required. 
