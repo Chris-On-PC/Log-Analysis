@@ -12,11 +12,11 @@ def popular_articles():
     c.execute(query)
     rows = c.fetchall()
     db.close()
-    print ("A list of the most popular three articles of all time")
-    print ("{} - {} views" .format(rows[0][0], rows[0][1]))
-    print ("{} - {} views" .format(rows[1][0], rows[1][1]))
-    print ("{} - {} views" .format(rows[2][0], rows[2][1]))
-    print ("")  # Empty space
+    print("A list of the most popular three articles of all time")
+    print("{} - {} views" .format(rows[0][0], rows[0][1]))
+    print("{} - {} views" .format(rows[1][0], rows[1][1]))
+    print("{} - {} views" .format(rows[2][0], rows[2][1]))
+    print("")  # Empty space
     return rows
 
 
@@ -36,10 +36,10 @@ def popular_authors():
     c.execute(query)
     rows = c.fetchall()
     db.close()
-    print ("A list of the most popular article authors of all time")
+    print("A list of the most popular article authors of all time")
     for i in rows:
-        print ("{} - {} views" .format(i[0], i[1]))
-    print ("")  # Empty space
+        print("{} - {} views" .format(i[0], i[1]))
+    print("")  # Empty space
     return rows
 
 
@@ -64,10 +64,10 @@ def error_days():
     c.execute(query)
     rows = c.fetchall()
     db.close()
-    print ("The days on which more than 1% of requests lead to errors")
+    print("The days on which more than 1% of requests lead to errors")
     for i in rows:
-        print ("{} - {}%" .format(i[0], i[1]))
-    print ("")  # Empty space
+        print("{} - {}%" .format(i[0], i[1]))
+    print("")  # Empty space
     return rows
 
 
