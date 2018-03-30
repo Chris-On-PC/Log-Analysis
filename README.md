@@ -5,12 +5,12 @@ Building an informative summary from logs is a real task that comes up very ofte
 ## Getting Started
 
 You will need PostgreSQL to run the Python code for this project. Udacity provided a Linux virtual machine (VM) configuration that already contains the PostgreSQL database software. The software consist of:
- Markup : * The VirtualBox VM environment
-          * The Vagrant configuration program
+ * The VirtualBox VM environment
+ * The Vagrant configuration program
 
 The database for this project was also provided by Udacity, newsdata.sql, and should be placed the vagrant directory, which is shared with your virtual machine. 
 
-###Starting your VirtualBox
+### Starting your VirtualBox
 
 To start your virtual machine run "vagrant up" from inside your vagrant directory. Once the procedure has completed, log into it with vagrant ssh. You will then need to navigate to the shared vagrant directory "cd \vagrant"
 
@@ -33,6 +33,26 @@ Once you have the data loaded into your database, connect to your database using
 \d table — (replace table with the name of a table) — shows the database schema for that particular table.
 Get a sense for what sort of information is in each column of these tables.
 
+VIEWS
+
+The following views were created for this project. Add them before running the python application.
+
+```sql
+create view error as (select date(log.time) as
+date_error, count(*) as num from log
+where status = '404 NOT FOUND' group by date_error);
+
+create view alldata as (select date(log.time)
+as date_all, count(*) as num from log
+group by date_all);
+```
+The views were created by running the above SQL in the news databse. 
+example:
+```
+news=> create view alldata as (select date(log.time) as date_all, count(*) as num from log group by date_all);
+CREATE VIEW
+```
+
 The database includes three tables:
 
 The authors table includes information about the authors of articles.
@@ -54,7 +74,7 @@ For question 1 the most popular article, along with its number of views had to b
 
 To accomplish this the "slug" column, containing the abbriviated/web-link version of the article title, from the articles table had to be compared with paths of the website visited. The "log" table contains the information saved on all the web activity. If the slugs matched, excluding the path of the specific article on the website, it would count towards the number of times that article was view. The articles were then grouped by their name and ordered by the number of times it was view in descending order. The top 3 most viewed articles were then displayed.
 
-```
+```sql
 select title, count(path) as num 
 from articles, log
 where substring(log.path, 10, 100) = articles.slug
@@ -73,7 +93,7 @@ For question 2 the most popular artist had to be displayed along with the number
 
 This question built on the previous question. It required additional conditions to be added to the SQL query. On top of the previous question all that had to be done was link the article's author by their id from the "articles" table with the authors name through their id on the "author" table. They were then grouped by their name and ordered by the number of times the author's articles were viewed in descending order. 
 
-```
+```sql
 select name, count(path) as num
 from articles, log, authors
 where substring(log.path, 10, 100) = articles.slug
@@ -95,25 +115,9 @@ For this question two views were created. The first view counted the number of t
 The secoond view counted the number of requests to the server every day.  
 The two views were then compared and the number of error responses were devided by the total number repsonses to get a percentage of error responses for each day. If the percentage was more than 1 percent it would be displayed along with the date it occured.
 
-VIEWS
-```
-create view error as (select date(log.time) as
-date_error, count(*) as num from log
-where status = '404 NOT FOUND' group by date_error)
-
-reate view alldata as (select date(log.time)
-as date_all, count(*) as num from log
-group by date_all)
-```
-The views were created by running the above SQL in the news databse. 
-example:
-```
-news=> create view alldata as (select date(log.time) as date_all, count(*) as num from log group by date_all);
-CREATE VIEW
-```
 
 Python
-```
+```python
     query = """select to_char(alldata.date_all, 'Mon DD YYYY'),
             round(cast(error.num as numeric)/cast(alldata.num as numeric)*
             100, 1)

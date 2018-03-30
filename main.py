@@ -8,8 +8,8 @@ def connect(database_name="news"):
         db = psycopg2.connect("dbname={}".format(database_name))
         cursor = db.cursor()
         return db, cursor
-    except:
-        print("Error")
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
 
 
 def popular_articles():
@@ -56,15 +56,6 @@ def error_days():
 
     db, c = connect()
 
-    # query = """create view error as (select date(log.time) as
-    #            date_error, count(*) as num from log
-    #            where status = '404 NOT FOUND' group by date_error)"""
-    # c.execute(query)
-    # query = """create view alldata as (select date(log.time)
-    #            as date_all, count(*) as num from log
-    #            group by date_all)"""
-    # c.execute(query)
-
     query = """select to_char(alldata.date_all, 'Mon DD YYYY'),
             round(cast(error.num as numeric)/cast(alldata.num as numeric)*
             100, 1)
@@ -80,7 +71,7 @@ def error_days():
     print("")  # Empty space
     return rows
 
-
-popular_articles()
-popular_authors()
-error_days()
+if __name__ == '__main__':
+    popular_articles()
+    popular_authors()
+    error_days()
